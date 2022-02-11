@@ -100,12 +100,8 @@ def go(args):
     # HINT: use mlflow.sklearn.save_model
     # YOUR CODE HERE
     ######################################
-    mlflow.sklearn.save_model(
-        sk_pipe,
-        "random_forest_dir/",
-        serialization_format=mlflow.sklearn.SERIALIZATION_FORMAT_CLOUDPICKLE,
-        input_example=X_val.iloc[:2],
-    )
+    random_forest_dir = os.path.join("./random_forest_dir", args.output_artifact)
+    mlflow.sklearn.save_model(sk_pipe, random_forest_dir)
 
     ######################################
     # Upload the model we just exported to W&B
@@ -119,9 +115,9 @@ def go(args):
         args.output_artifact,
         type="model_export",
         description="Model pipeline export",
-        metadata=args.rf_config
+        metadata=rf_config
     )
-    artifact.add_dir("random_forest_dir")
+    artifact.add_dir(random_forest_dir)
 
     run.log_artifact(artifact)
 
